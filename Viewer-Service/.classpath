@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main"/>
+	<classpathentry kind="src" output="tmp/test" path="src/test"/>
+	<classpathentry kind="lib" path="lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="lib/i5-WebConnector-0.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/i5-restMapper-0.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/las2peer-0.0.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/yfiles-server.jar"/>
+	<classpathentry kind="lib" path="lib/y.jar"/>
+	<classpathentry kind="lib" path="lib/ysvg.jar"/>
+	<classpathentry kind="lib" path="lib/batik.jar"/>
+	<classpathentry kind="lib" path="lib/la4j-0.4.9.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/OCD-Service"/>
+	<classpathentry kind="output" path="tmp/classes"/>
+</classpath>
