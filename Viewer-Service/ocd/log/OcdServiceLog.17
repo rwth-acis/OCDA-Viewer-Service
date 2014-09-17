@@ -1,0 +1,19 @@
+Sep 05, 2014 7:50:00 PM i5.las2peer.services.ocd.utils.RequestHandler log
+INFORMATION: Overlapping Community Detection Service started.
+Sep 05, 2014 7:50:00 PM i5.las2peer.services.ocd.utils.RequestHandler log
+INFORMATION: Overlapping Community Detection Viewer Service started.
+Sep 05, 2014 7:56:38 PM i5.las2peer.services.ocd.utils.RequestHandler log
+WARNUNG: 
+java.lang.IllegalArgumentException: No enum constant i5.las2peer.services.ocdViewer.layouters.LayoutType.0
+	at java.lang.Enum.valueOf(Enum.java:238)
+	at i5.las2peer.services.ocdViewer.layouters.LayoutType.valueOf(LayoutType.java:1)
+	at i5.las2peer.services.ocdViewer.ServiceClass.getGraph(ServiceClass.java:118)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at i5.las2peer.api.Service.execute(Service.java:148)
+	at i5.las2peer.security.ServiceAgent.invoke(ServiceAgent.java:478)
+	at i5.las2peer.security.ServiceAgent.handle(ServiceAgent.java:500)
+	at i5.las2peer.execution.L2pThread.run(L2pThread.java:58)
+

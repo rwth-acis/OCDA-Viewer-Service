@@ -1,0 +1,28 @@
+Sep 07, 2014 12:17:29 PM i5.las2peer.services.ocd.utils.RequestHandler log
+SCHWERWIEGEND: Cover deleted while algorithm running.
+Sep 07, 2014 12:19:24 PM i5.las2peer.services.ocd.utils.RequestHandler log
+WARNUNG: 
+java.lang.IllegalArgumentException
+	at i5.las2peer.services.ocd.utils.RequestHandler.parseBoolean(RequestHandler.java:242)
+	at i5.las2peer.services.ocd.ServiceClass.getCovers(ServiceClass.java:392)
+	at sun.reflect.GeneratedMethodAccessor7.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at i5.las2peer.api.Service.execute(Service.java:148)
+	at i5.las2peer.security.ServiceAgent.invoke(ServiceAgent.java:478)
+	at i5.las2peer.security.ServiceAgent.handle(ServiceAgent.java:500)
+	at i5.las2peer.execution.L2pThread.run(L2pThread.java:58)
+
+Sep 07, 2014 12:19:28 PM i5.las2peer.services.ocd.utils.RequestHandler log
+WARNUNG: 
+java.lang.IllegalArgumentException
+	at i5.las2peer.services.ocd.utils.RequestHandler.parseBoolean(RequestHandler.java:242)
+	at i5.las2peer.services.ocd.ServiceClass.getCovers(ServiceClass.java:392)
+	at sun.reflect.GeneratedMethodAccessor7.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at i5.las2peer.api.Service.execute(Service.java:148)
+	at i5.las2peer.security.ServiceAgent.invoke(ServiceAgent.java:478)
+	at i5.las2peer.security.ServiceAgent.handle(ServiceAgent.java:500)
+	at i5.las2peer.execution.L2pThread.run(L2pThread.java:58)
+
