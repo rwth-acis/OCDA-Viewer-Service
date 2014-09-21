@@ -7,7 +7,6 @@
 	<classpathentry kind="lib" path="lib/i5-WebConnector-0.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/i5-restMapper-0.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/las2peer-0.0.4.1.jar"/>
-	<classpathentry kind="lib" path="lib/yfiles-server.jar"/>
 	<classpathentry kind="lib" path="lib/y.jar"/>
 	<classpathentry kind="lib" path="lib/ysvg.jar"/>
 	<classpathentry kind="lib" path="lib/batik.jar"/>
@@ -15,9 +14,7 @@
 	<classpathentry kind="lib" path="lib/derby.jar"/>
 	<classpathentry kind="lib" path="lib/derbyclient.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-jpa_2.0_spec-1.1.jar"/>
-	<classpathentry kind="lib" path="lib/guava-18.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/OCD-Service"/>
 	<classpathentry kind="lib" path="lib/commons-lang3-3.3.2.jar"/>
 	<classpathentry kind="output" path="tmp/classes"/>
 </classpath>

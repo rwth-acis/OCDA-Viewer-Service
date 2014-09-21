@@ -5,9 +5,9 @@ public class ViewerTestConstants {
 	/*
 	 * Graph input files
 	 */
-	public static final String outputFolderPath = "ocd\\test\\output\\";	
+	public static final String outputFolderPath = "ocd/test/output/";	
 	
-	public static final String inputFolderPath = "ocd\\test\\input\\";
+	public static final String inputFolderPath = "ocd/test/input/";
 	
 	public static final String sawmillEdgeListInputPath = inputFolderPath + "SawmillEdgeList.txt";
 	

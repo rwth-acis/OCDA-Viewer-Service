@@ -6,15 +6,14 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-/*
- * Uses a set of 19 predefined high contrast colors, which might make
- * node labels directly on the nodes difficult to read.
+/**
+ * Uses a set of 19 predefined high contrast colors which are also supposed to be easily identifiable
+ * for most people with color blindness.
+ * @author Sebastian
+ *
  */
 public class PredefinedColorsCoverPainter implements CoverPainter {
 
-	/**
-	 * Colors the nodes of the corresponding graph according to the cover's communities
-	 */
 	@Override
 	public void doPaint(Cover cover) {
 		List<Color> colors = getColorCollection(cover.communityCount());
@@ -23,8 +22,12 @@ public class PredefinedColorsCoverPainter implements CoverPainter {
 		}
 	}
 
-	/*
-	 * Gets a selection of predefined high contrast colors.
+	/**
+	 * Returns the predefined color collection.
+	 * @param amount The amount of colors required.
+	 * @return The color collection. In case the amount of required colors is bigger
+	 * than the amount of predefined colors, the collection colors will periodically
+	 * repeat themselves.
 	 */
 	protected List<Color> getColorCollection(int amount) {
 	    Color[] colorCollection = new Color[19];

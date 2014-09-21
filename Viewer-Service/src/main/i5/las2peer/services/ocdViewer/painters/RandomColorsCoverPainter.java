@@ -9,9 +9,6 @@ import java.util.Random;
 
 public class RandomColorsCoverPainter implements CoverPainter {
 
-	/**
-	 * Colors the nodes of the corresponding graph according to the cover's communities
-	 */
 	@Override
 	public void doPaint(Cover cover) {
 		List<Color> colors = getColorCollection(cover.communityCount());
@@ -20,8 +17,11 @@ public class RandomColorsCoverPainter implements CoverPainter {
 		}
 	}
 	
-	/*
-	 * Gets a selection of random colors
+	/**
+	 * Returns a collection of random colors.
+	 * Each color is mixed with a light gray to ensure readability of node labels.
+	 * @param amount The amount of colors required.
+	 * @return The color collection.
 	 */
 	protected List<Color> getColorCollection(int amount) {
 		List<Color> colors = new ArrayList<Color>();

@@ -2,6 +2,7 @@ package i5.las2peer.services.ocdViewer.adapters.visualGraphOutput;
 
 import i5.las2peer.services.ocd.adapters.AdapterException;
 import i5.las2peer.services.ocd.graphs.CustomGraph;
+import i5.las2peer.services.ocdViewer.adapters.visualOutput.SvgVisualOutputAdapter;
 import i5.las2peer.services.ocdViewer.layouters.GraphLayoutType;
 import i5.las2peer.services.ocdViewer.testsUtil.ViewerTestConstants;
 import i5.las2peer.services.ocdViewer.testsUtil.ViewerTestGraphFactory;
@@ -20,7 +21,7 @@ public class SvgVisualGraphOutputAdapterTest {
 		CustomGraph graph = ViewerTestGraphFactory.getTinyCircleGraph();
 		LayoutHandler handler = new LayoutHandler();
 		handler.doLayout(graph, GraphLayoutType.ORGANIC, true, false, 20, 45);
-		SvgVisualGraphOutputAdapter adapter = new SvgVisualGraphOutputAdapter();
+		SvgVisualOutputAdapter adapter = new SvgVisualOutputAdapter();
 		adapter.setWriter(new FileWriter(ViewerTestConstants.tinyCircleSvgOutputPath));
 		adapter.writeGraph(graph);
 	}
@@ -30,7 +31,7 @@ public class SvgVisualGraphOutputAdapterTest {
 		CustomGraph graph = ViewerTestGraphFactory.getTwoCommunitiesGraph();
 		LayoutHandler handler = new LayoutHandler();
 		handler.doLayout(graph, GraphLayoutType.ORGANIC, true, false, 20, 45);
-		SvgVisualGraphOutputAdapter adapter = new SvgVisualGraphOutputAdapter();
+		SvgVisualOutputAdapter adapter = new SvgVisualOutputAdapter();
 		adapter.setWriter(new FileWriter(ViewerTestConstants.twoCommunitiesSvgOutputPath));
 		adapter.writeGraph(graph);
 	}
@@ -38,7 +39,7 @@ public class SvgVisualGraphOutputAdapterTest {
 	@Test
 	public void testSvgOnSawmillGraph() throws AdapterException, IOException, InstantiationException, IllegalAccessException {
 		CustomGraph graph = ViewerTestGraphFactory.getSawmillGraph();
-		SvgVisualGraphOutputAdapter adapter = new SvgVisualGraphOutputAdapter();
+		SvgVisualOutputAdapter adapter = new SvgVisualOutputAdapter();
 		LayoutHandler handler = new LayoutHandler();
 		handler.doLayout(graph, GraphLayoutType.ORGANIC, true, false, 20, 45);
 		adapter.setWriter(new FileWriter(ViewerTestConstants.sawmillSvgOutputPath));

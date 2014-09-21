@@ -27,12 +27,34 @@ import y.view.NodeRealizer;
 import y.view.ShapeNodeRealizer;
 import y.view.SmartNodeLabelModel;
 
+/**
+ * Manages the integration of all layouting phases.
+ * @author Sebastian
+ *
+ */
 public class LayoutHandler {
 
+	/**
+	 * The factory used to create cover painters.
+	 */
 	private CoverPainterFactory coverPainterFactory = new CoverPainterFactory();
 	
+	/**
+	 * The factory used to create graph layouters.
+	 */
 	private GraphLayouterFactory graphLayouterFactory = new GraphLayouterFactory();
 	
+	/**
+	 * Applies a layout a graph.
+	 * @param graph The graph.
+	 * @param layoutType The layout type defining which graph layouter to use.
+	 * @param doLabelNodes Defines whether nodes will receive labels with their names (TRUE) or not (FALSE).
+	 * @param doLabelEdges Defines whether edges will receive labels with their weights (TRUE) or not (FALSE).
+	 * @param minNodeSize Defines the minimum size of a node. Must be greater than 0.
+	 * @param maxNodeSize Defines the maximum size of a node. Must be at least as high as the defined minimum size.
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
 	public void doLayout(CustomGraph graph, GraphLayoutType layoutType, boolean doLabelNodes, boolean doLabelEdges, 
 			double minNodeSize, double maxNodeSize) throws InstantiationException, IllegalAccessException {
 		setLayoutDefaults(graph, minNodeSize, maxNodeSize);
@@ -43,7 +65,7 @@ public class LayoutHandler {
 	}
 	
 	/**
-	 * Sets the layout defaults for a graph.
+	 * Sets the default layout attributes for a graph, such as node and edge shapes and node sizes.
 	 * @param graph
 	 */
 	private void setLayoutDefaults(CustomGraph graph, double minNodeSize, double maxNodeSize) {
@@ -76,6 +98,18 @@ public class LayoutHandler {
 		}
 	}
 	
+	/**
+	 * Applies a layout the graph of a cover.
+	 * @param cover The cover.
+	 * @param layoutType The layout type defining which graph layouter to use.
+	 * @param doLabelNodes Defines whether nodes will receive labels with their names (TRUE) or not (FALSE).
+	 * @param doLabelEdges Defines whether edges will receive labels with their weights (TRUE) or not (FALSE).
+	 * @param minNodeSize Defines the minimum size of a node. Must be greater than 0.
+	 * @param maxNodeSize Defines the maximum size of a node. Must be at least as high as the defined minimum size.
+	 * @param paintingType The painting type defining which cover painter to use.
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
 	public void doLayout(Cover cover, GraphLayoutType layoutType, boolean doLabelNodes, boolean doLabelEdges, 
 			double minNodeSize, double maxNodeSize, CoverPaintingType paintingType) throws InstantiationException, IllegalAccessException {
 		CustomGraph graph = cover.getGraph();
@@ -89,6 +123,10 @@ public class LayoutHandler {
 		setViewDefaults(new Graph2DView(graph));
 	}
 	
+	/**
+	 * Sets the view default attributes, such as the rendering order.
+	 * @param view
+	 */
 	private void setViewDefaults(Graph2DView view) {
 		DefaultGraph2DRenderer renderer = new DefaultGraph2DRenderer();
 		view.setGraph2DRenderer(renderer);
@@ -96,6 +134,12 @@ public class LayoutHandler {
 		view.fitContent();
 	}
 	
+	/**
+	 * Labels a graph.
+	 * @param graph The graph.
+	 * @param doLabelNodes Defines whether nodes will receive labels with their names (TRUE) or not (FALSE).
+	 * @param doLabelEdges Defines whether edges will receive labels with their weights (TRUE) or not (FALSE).
+	 */
 	private void labelGraph(CustomGraph graph, boolean doLabelNodes, boolean doLabelEdges) {
 		if(doLabelNodes) {
 			NodeCursor nodes = graph.nodes();
@@ -127,6 +171,13 @@ public class LayoutHandler {
 		}
 	}
 	
+	/**
+	 * Applies the community colors of a cover to the nodes of the corresponding graph.
+	 * The color of an overlapping node is obtained by a weighted mix
+	 * of the corresponding community colors in accordance with the node's
+	 * membership degrees / belonging factors.
+	 * @param cover The cover.
+	 */
 	private void paintNodes(Cover cover) {
 		CustomGraph graph = cover.getGraph();
 		NodeCursor nodes = graph.nodes();

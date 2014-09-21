@@ -16,33 +16,6 @@
 	<property name="src.main" location="src/main" />
 	<property name="src.junit" location="src/test" />
 
-	<!-- TODO remove ocd service properties -->
-	<!-- 	<property name="src.ocd.adapters" location="../../REST-OCD-Services/LAS2peer Sample Service/src/main/i5/las2peer/services/ocd/adapters" />
-	<property name="src.ocd.graph" location="../../REST-OCD-Services/LAS2peer Sample Service/src/main/i5/las2peer/services/ocd/graph" />
-	<property name="src.ocd.utils" location="../../REST-OCD-Services/LAS2peer Sample Service/src/main/i5/las2peer/services/ocd/utils" /> -->
-	<property name="ocd.src.ocd.main" location="../../REST-OCD-Services/LAS2peer Sample Service/src/main" />
-	<property name="ocd.tmp.junit" location="${tmp}/test" />
-	<property name="ocd.src.junit" location="../../REST-OCD-Services/LAS2peer Sample Service/src/test" />
-	<property name="ocd.serviceDir" location="../../REST-OCD-Services/LAS2peer Sample Service/service" />
-	<property name="ocd_service_agent.path" value="${startup}/agent-service-${ocdService.name}.xml" />
-
-	<!-- ocd properties -->
-	<property name="ocd" location="ocd" />
-	<property name="ocd.bin" location="${ocd}/bin" />
-	<property name="ocd.derby" location="${ocd}/derby" />
-	<property name="ocd.derby.db" location="${ocd.derby}/db" />
-	<property name="ocd.eclipselink" location="${ocd}/eclipselink" />
-	<property name="ocd.lfr" location="${ocd}/lfr" />
-	<property name="ocd.log" location="${ocd}/log" />
-	<property name="ocd.test" location="${ocd}/test" />
-	<property name="ocd.test.input" location="${ocd.test}/input" />
-	<property name="ocd.test.output" location="${ocd.test}/output" />
-	<property name="ocd.tmp" location="${ocd}/tmp" />
-	<property name="database.server" value="127.0.0.1" />
-	<property name="database.port" value="1527" />
-	<property name="database.user" value="admin" />
-	<property name="database.password" value="adminPw" />
-	
 	<property name="tmp" location="tmp" />
 	<property name="log" location="log" />
 	<property name="service" location="service" />
@@ -66,6 +39,22 @@
 
 	<property name="lib.junit" location="${lib}/junit-4.11.jar" />
 
+	<!-- ocd properties -->
+	<property name="ocd" location="ocd" />
+	<property name="ocd.bin" location="${ocd}/bin" />
+	<property name="ocd.derby" location="${ocd}/derby" />
+	<property name="ocd.derby.db" location="${ocd.derby}/db" />
+	<property name="ocd.eclipselink" location="${ocd}/eclipselink" />
+	<!--<property name="ocd.lfr" location="${ocd}/lfr" />-->
+	<!--<property name="ocd.log" location="${ocd}/log" />-->
+	<property name="ocd.test" location="${ocd}/test" />
+	<property name="ocd.test.input" location="${ocd.test}/input" />
+	<property name="ocd.test.output" location="${ocd.test}/output" />
+	<!--<property name="ocd.tmp" location="${ocd}/tmp" />-->
+	<property name="database.server" value="127.0.0.1" />
+	<property name="database.port" value="1527" />
+	<property name="database.user" value="admin" />
+	<property name="database.password" value="adminPw" />
 
 	<!-- Ivy Installation (Tool to fetch Libraries) -->
 	<property name="ivy.install.version" value="2.3.0" />
@@ -96,16 +85,17 @@
 		<ivy:retrieve type="jar" />
 	</target>
 
-	<!-- Initialization (Folder Creation)-->
+
+	<!-- Initialization -->
 	<target name="init_ocd" depends="clean_before_build">
 		<mkdir dir="${ocd.derby}" />
 		<mkdir dir="${ocd.eclipselink}" />
-		<mkdir dir="${ocd.lfr}" />
-		<mkdir dir="${ocd.log}" />
+		<!--<mkdir dir="${ocd.lfr}" />-->
+		<!--<mkdir dir="${ocd.log}" />-->
 		<mkdir dir="${ocd.test}" />
 		<mkdir dir="${ocd.test.input}" />
 		<mkdir dir="${ocd.test.output}" />
-		<mkdir dir="${ocd.tmp}" />
+		<!--<mkdir dir="${ocd.tmp}" />-->
 	</target>
 	
 	<target name="init_general" depends="init_ocd">
@@ -132,24 +122,16 @@
 
 	<!-- Compilation -->
 	<target name="compile_main" depends="init_compile">
-		<!-- TODO remove ocd src ocd from src dir and file set -->
-		<javac srcdir="${src.main}:${ocd.src.ocd.main}" destdir="${tmp.classes}" classpathref="libraries" source="1.7" target="1.7" debug="on" encoding="UTF-8" />
+		<javac srcdir="${src.main}" destdir="${tmp.classes}" classpathref="libraries" source="1.7" target="1.7" debug="on" encoding="UTF-8" />
 		<copy todir="${tmp.classes}">
 			<fileset dir="${src.main}">
-				<include name="**/*.xml" />
-			</fileset>
-			<fileset dir="${ocd.src.ocd.main}">
 				<include name="**/*.xml" />
 			</fileset>
 		</copy>
 	</target>
 
-	<!-- TODO remove javac ocd src junit -->
 	<target name="compile_junit" depends="init_compile">
 		<javac srcdir="${src.junit}" destdir="${tmp.junit}" classpath="${tmp.classes}:${lib.junit}" classpathref="libraries" source="1.7" target="1.7" debug="on" encoding="UTF-8" />
-		<javac srcdir="${ocd.src.junit}" destdir="${tmp.junit}" classpath="${tmp.classes}:${lib.junit}" classpathref="libraries" source="1.7" target="1.7" debug="on" encoding="UTF-8">
-			<exclude name="**/DatabaseInitializer.java" />
-		</javac>
 		<copy todir="${tmp.junit}">
 			<fileset dir="${src.junit}">
 				<include name="**/*.xml" />
@@ -179,14 +161,7 @@
 				<attribute name="Library-SymbolicName" value="${service.name}" />
 			</manifest>
 		</jar>
-		<!-- TODO remove copy -->
-		<copy todir="${service}">
-			<fileset dir="${ocd.serviceDir}">
-				<include name="**/*.jar" />
-			</fileset>
-		</copy>
 	</target>
-
 
 	<!-- Generate Documentation -->
 	<target name="java_doc" depends="init_doc">
@@ -199,17 +174,17 @@
 
 
 	<!-- JUnit Testing -->
-	<target name="junit" depends="junit_tests, junit_clean, jar" />
+	<target name="junit" depends="junit_clean, junit_tests" />
 
 	<target name="init_junit" depends="init_general">
 		<mkdir dir="${junit.report}" />
 	</target>
 
-	<target name="junit_clean">
+	<target name="junit_clean" depends="junit_tests">
 		<delete dir="${tmp.junit}" />
 	</target>
 
-	<target name="junit_tests" depends="init_junit, compile_all">
+	<target name="junit_tests" depends="init_junit, compile_all, jar">
 		<delete dir="${ocd.derby.db}" />
 		<parallel>
 			<antcall target="launch_database_server">
@@ -239,6 +214,7 @@
 	</target>
 
 	<!-- Database Server Control -->
+	
 	<target name="launch_database_server">
 		<echo>Trying to start database server.
 May fail if the server is already running or the port is otherwise occupied.</echo>
@@ -264,7 +240,7 @@ May fail if the server is not running.</echo>
 	</target>
 	
 	<!-- Database Initialization -->
-	<target name="init_database" depends="init_junit, compile_all">
+	<target name="setup_database" depends="init_junit, compile_all">
 		<delete dir="${ocd.derby.db}" />
 		<parallel>
 			<antcall target="launch_database_server">
@@ -293,17 +269,11 @@ May fail if the server is not running.</echo>
 		</antcall>
 	</target>
 
-
 	<!-- XML Agent Generation (Builds Jar first so that Generator is available)-->
 	<target name="generate_service_agent" depends="jar">
 		<echo message="Writing Service Agent xml to ${service_agent.path}" />
 		<java classname="i5.las2peer.tools.ServiceAgentGenerator" classpathref="libraries" failonerror="true" fork="true" output="${service_agent.path}">
 			<arg line="'${service.name}.${service.class}' '${service.password}'" />
-		</java>
-		<!-- TODO remove agent generation -->
-		<echo message="Writing Ocd Service Agent xml to ${ocd_service_agent.path}" />
-		<java classname="i5.las2peer.tools.ServiceAgentGenerator" classpathref="libraries" failonerror="true" fork="true" output="${ocd_service_agent.path}">
-			<arg line="'${ocdService.name}.${ocdService.class}' '${ocdService.password}'" />
 		</java>
 	</target>
 
@@ -317,11 +287,10 @@ May fail if the server is not running.</echo>
 	<target name="generate_configs" depends="generate_service_agent, generate_user_agent">
 		<echo file="${passphrases.path}" append="false">agent-service-${service.name}.xml;${service.password}
 agent-user-${las2peer_user.name}.xml;${las2peer_user.password}
-agent-service-${ocdService.name}.xml;${ocdService.password}
 </echo>
 	</target>
 
-	<target name="database" depends="generate_configs, init_database" />
+	<target name="database" depends="generate_configs, setup_database" />
 
 	<!-- General Cleanup -->
 	<target name="clean_before_build" depends="shutdown_database_server">

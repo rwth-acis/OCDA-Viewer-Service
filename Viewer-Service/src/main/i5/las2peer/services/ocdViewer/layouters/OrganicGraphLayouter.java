@@ -6,6 +6,11 @@ import y.layout.ParallelEdgeLayouter;
 import y.layout.organic.SmartOrganicLayouter;
 import y.layout.router.OrganicEdgeRouter;
 
+/**
+ * Organic layouter, based on the Organic Layout Style of the yFiles library.
+ * @author Sebastian
+ *
+ */
 public class OrganicGraphLayouter implements GraphLayouter {
 
 	@Override
