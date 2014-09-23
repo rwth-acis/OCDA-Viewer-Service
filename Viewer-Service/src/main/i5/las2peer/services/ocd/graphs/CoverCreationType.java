@@ -1,4 +1,4 @@
-package i5.las2peer.services.ocd.algorithms;
+package i5.las2peer.services.ocd.graphs;
 
 import java.security.InvalidParameterException;
 import java.util.Locale;
@@ -102,7 +102,7 @@ public enum CoverCreationType {
 	 * Returns the CoverCreationMethod subclass corresponding to the type.
 	 * @return The corresponding class.
 	 */
-	protected Class<? extends CoverCreationMethod> getCreationMethodClass() {
+	public Class<? extends CoverCreationMethod> getCreationMethodClass() {
 		return this.creationMethodClass;
 	}
 	
