@@ -1,4 +1,4 @@
-<project name="LAS2peer-Template-Project" default="jar" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="Viewer-Service-Project" default="jar" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 
 	<property file="etc/ant_configuration/service.properties" />
 	<property file="etc/ant_configuration/user.properties" />
@@ -6,7 +6,9 @@
 	<property name="startup" location="etc/startup" />
 
 	<property name="service_agent.path" value="${startup}/agent-service-${service.name}.xml" />
-	<property name="user_agent.path" value="${startup}/agent-user-${las2peer_user.name}.xml" />
+    <property name="user_agent1.path" value="${startup}/agent-user-${las2peer_user1.name}.xml" />
+    <property name="user_agent2.path" value="${startup}/agent-user-${las2peer_user2.name}.xml" />
+    <property name="user_agent3.path" value="${startup}/agent-user-${las2peer_user3.name}.xml" />
 	<property name="passphrases.path" value="${startup}/passphrases.txt" />
 
 	<presetdef name="javac">
@@ -55,6 +57,16 @@
 	<property name="database.port" value="1527" />
 	<property name="database.user" value="admin" />
 	<property name="database.password" value="adminPw" />
+	
+	<!-- yGuard obfuscation -->
+	<property name="lib.y" location="${lib}/y.jar" />
+	<property name="export.jars.y.obf" location="${export.jars}/y.obf-viewer.jar" />
+	<property name="lib.ySvg" location="${lib}/ysvg.jar" />
+	<property name="export.jars.ySvg.obf" location="${export.jars}/ysvg.obf-viewer.jar" />
+	<property name="ocd.yGuard" location="${ocd}/yGuard" />
+	<property name="ocd.yGuard.log" location="${ocd.yGuard}/log.xml" />
+	<property name="yguard.jar" location="${lib}/yguard.jar" />
+	<property name="lib.yGuard" location="${lib}/yguard.jar" />
 
 	<!-- Ivy Installation (Tool to fetch Libraries) -->
 	<property name="ivy.install.version" value="2.3.0" />
@@ -91,6 +103,7 @@
 		<mkdir dir="${ocd.derby}" />
 		<mkdir dir="${ocd.eclipselink}" />
 		<!--<mkdir dir="${ocd.lfr}" />-->
+		<mkdir dir="${ocd.yGuard}" />
 		<!--<mkdir dir="${ocd.log}" />-->
 		<mkdir dir="${ocd.test}" />
 		<mkdir dir="${ocd.test.input}" />
@@ -143,7 +156,7 @@
 
 
 	<!-- Generate Jars -->
-	<target name="jar" depends="compile_main">
+    <target name="jar" depends="compile_main" description="--> generate service jars">
 		<jar jarfile="${export.jars}/${service.name}-${service.version}.jar">
 			<fileset dir="${tmp.classes}" includes="${service.path}/**" />
 			<fileset dir="${tmp.classes}" includes="${ocdService.path}/**" />
@@ -161,6 +174,13 @@
 				<attribute name="Library-SymbolicName" value="${service.name}" />
 			</manifest>
 		</jar>
+    	<!-- Add persistence.xml -->
+		<jar destfile="${export.jars}/${service.name}-${service.version}.jar" update="true">
+			<zipfileset dir="ocd/eclipselink" includes="persistence.xml" prefix="META-INF"/>
+		</jar>
+	    <jar destfile="${service}/${service.name}-${service.version}.jar" update="true">
+	    	<zipfileset dir="ocd/eclipselink" includes="persistence.xml" prefix="META-INF"/>
+	    </jar>
 	</target>
 
 	<!-- Generate Documentation -->
@@ -277,14 +297,33 @@ May fail if the server is not running.</echo>
 		</java>
 	</target>
 
-	<target name="generate_user_agent" depends="jar">
-		<echo message="Writing User Agent xml to ${user_agent.path}" />
-		<java classname="i5.las2peer.tools.UserAgentGenerator" classpathref="libraries" failonerror="true" fork="true" output="${user_agent.path}">
-			<arg line="'${las2peer_user.password}' '${las2peer_user.name}' '${las2peer_user.email}'" />
-		</java>
-	</target>
+		<available file="${user_agent1.path}" property="user_agent_exists1"/>
+		<available file="${user_agent2.path}" property="user_agent_exists2"/>
+		<available file="${user_agent3.path}" property="user_agent_exists3"/>
+		
+	    <target name="generate_user_agent1" depends="jar" unless="user_agent_exists1">
+	        <echo message="Writing User Agent xml to ${user_agent1.path}"/>
+	        <java classname="i5.las2peer.tools.UserAgentGenerator" classpathref="libraries"
+	            failonerror="true" fork="true" output="${user_agent1.path}">
+	            <arg line="'${las2peer_user1.password}' '${las2peer_user1.name}' '${las2peer_user1.email}'"/>
+	        </java>
+	    </target>
+	    <target name="generate_user_agent2" depends="jar" unless="user_agent_exists2">
+	        <echo message="Writing User Agent xml to ${user_agent2.path}"/>
+	        <java classname="i5.las2peer.tools.UserAgentGenerator" classpathref="libraries"
+	            failonerror="true" fork="true" output="${user_agent2.path}">
+	            <arg line="'${las2peer_user2.password}' '${las2peer_user2.name}' '${las2peer_user2.email}'"/>
+	        </java>
+	    </target>
+	    <target name="generate_user_agent3" depends="jar" unless="user_agent_exists3">
+	        <echo message="Writing User Agent xml to ${user_agent3.path}"/>
+	        <java classname="i5.las2peer.tools.UserAgentGenerator" classpathref="libraries"
+	            failonerror="true" fork="true" output="${user_agent3.path}">
+	            <arg line="'${las2peer_user3.password}' '${las2peer_user3.name}' '${las2peer_user3.email}'"/>
+	        </java>
+	    </target>
 
-	<target name="generate_configs" depends="generate_service_agent, generate_user_agent">
+	<target name="generate_configs" depends="generate_service_agent, generate_user_agent1, generate_user_agent2, generate_user_agent3">
 		<echo file="${passphrases.path}" append="false">agent-service-${service.name}.xml;${service.password}
 agent-user-${las2peer_user.name}.xml;${las2peer_user.password}
 </echo>
@@ -312,5 +351,39 @@ agent-user-${las2peer_user.name}.xml;${las2peer_user.password}
 	</target>
 
 	<target name="all" depends="clean_before_build, generate_configs, junit, java_doc, clean_after_build" />
+	
+	 <!-- Obfuscates the yFiles part of the application (i.e., y.jar) and adjusts -->  
+	    <!-- the non-yFiles part given by the application's Jar file accordingly. -->  
+	    <target name="obfuscate" depends="jar">  
+	      <!-- yGuard Ant task. -->  
+	      <taskdef name="yguard"   
+	               classname="com.yworks.yguard.YGuardTask"   
+	               classpath="${lib.yGuard}"/>  
+	      <!-- Integrated obfuscation and name adjustment... -->  
+	      <yguard>  
+	        <!-- Obfuscate the yFiles Jar. -->  
+	        <inoutpair in="${lib.y}" out="${export.jars.y.obf}"/>  
+	      	<inoutpair in="${lib.ySvg}" out="${export.jars.ySvg.obf}"/> 
+	        <!-- While obfuscating, adjust the names of yFiles features in the -->  
+	        <!-- application's Jar file. -->  
+	        <inoutpair in="${export.jars}/${service.name}-${service.version}.jar" out="${export.jars}/${service.name}-${service.version}.obf.jar"/>  
+	        <!-- ...using the yGuard 'rename' task. -->  
+	        <rename logfile="${ocd.yGuard.log}" replaceClassNameStrings="true">
+	          <property name="obfuscation-prefix" value="yguard"/>
+	          <keep>
+	            <class classes="private" methods="private" fields="private">  
+	              <patternset>
+	              	<!-- define classes/methods/fields not to be renamed -->
+	                <include name="i5.**"/>
+	              	<!-- exlude custom classes extending/implementing yFiles classes -->
+	              	<exclude name="i5.las2peer.services.ocd.graphs.CustomGraph"/>
+	              	<exclude name="i5.las2peer.services.ocd.graphs.CustomGraphListener"/>
+	              </patternset>
+	            </class>
+	          </keep>
+	        </rename>
+	      	
+	      </yguard>  
+	    </target>
 
 </project>

@@ -1,5 +1,5 @@
-Tue Sep 23 16:46:59 CEST 2014 : Apache Derby Network Server 10.10.2.0 - (1582446) wurde gestartet und ist bereit, Verbindungen auf Port 1527 zu akzeptieren.
-Tue Sep 23 16:47:06 CEST 2014 Thread[DRDAConnThread_2,5,main] Cleanup action starting
+Mon Mar 23 16:03:36 CET 2015 : Apache Derby Network Server 10.10.2.0 - (1582446) wurde gestartet und ist bereit, Verbindungen auf Port 1527 zu akzeptieren.
+Mon Mar 23 16:03:42 CET 2015 Thread[DRDAConnThread_2,5,main] Cleanup action starting
 java.sql.SQLNonTransientConnectionException: Connection authentication failure occurred.  Reason: Invalid authentication..
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
@@ -46,9 +46,9 @@ java.sql.SQLException: Connection authentication failure occurred.  Reason: Inva
 ============= end nested exception, level (1) ===========
 Cleanup action completed
 ----------------------------------------------------------------
-Tue Sep 23 16:47:06 CEST 2014:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0148-a2fa-cf62-ffff9a9e2064 
-on database directory C:\Users\Sebastian\Documents\GitHub\OCDA-Viewer-Service\Viewer-Service\ocd\derby\db with class loader sun.misc.Launcher$AppClassLoader@14ae5a5 
+Mon Mar 23 16:03:43 CET 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-014c-4729-13c0-ffff9a9e2064 
+on database directory C:\Users\Sebastian\Documents\GitHub\OCDA-Viewer-Service\Viewer-Service\ocd\derby\db with class loader sun.misc.Launcher$AppClassLoader@6f94fa3e 
 Loaded from file:/C:/Users/Sebastian/Documents/GitHub/OCDA-Viewer-Service/Viewer-Service/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_05-b13
@@ -59,8 +59,8 @@ os.version=6.1
 derby.system.home=C:\Users\Sebastian\Documents\GitHub\OCDA-Viewer-Service\Viewer-Service\ocd\derby
 Database Class Loader started - derby.database.classpath=''
 ----------------------------------------------------------------
-Tue Sep 23 16:48:02 CEST 2014: Shutting down Derby engine
+Mon Mar 23 16:04:12 CET 2015: Shutting down Derby engine
 ----------------------------------------------------------------
-Tue Sep 23 16:48:02 CEST 2014:
-Shutting down instance a816c00e-0148-a2fa-cf62-ffff9a9e2064 on database directory C:\Users\Sebastian\Documents\GitHub\OCDA-Viewer-Service\Viewer-Service\ocd\derby\db with class loader sun.misc.Launcher$AppClassLoader@14ae5a5 
+Mon Mar 23 16:04:12 CET 2015:
+Shutting down instance a816c00e-014c-4729-13c0-ffff9a9e2064 on database directory C:\Users\Sebastian\Documents\GitHub\OCDA-Viewer-Service\Viewer-Service\ocd\derby\db with class loader sun.misc.Launcher$AppClassLoader@6f94fa3e 
 ----------------------------------------------------------------
