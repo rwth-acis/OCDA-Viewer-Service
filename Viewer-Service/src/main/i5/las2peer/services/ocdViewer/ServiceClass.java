@@ -3,13 +3,6 @@ package i5.las2peer.services.ocdViewer;
 import i5.las2peer.api.Service;
 import i5.las2peer.restMapper.RESTMapper;
 import i5.las2peer.restMapper.annotations.ContentParam;
-import i5.las2peer.restMapper.annotations.DELETE;
-import i5.las2peer.restMapper.annotations.GET;
-import i5.las2peer.restMapper.annotations.POST;
-import i5.las2peer.restMapper.annotations.Path;
-import i5.las2peer.restMapper.annotations.PathParam;
-import i5.las2peer.restMapper.annotations.Produces;
-import i5.las2peer.restMapper.annotations.QueryParam;
 import i5.las2peer.restMapper.annotations.Version;
 import i5.las2peer.security.UserAgent;
 import i5.las2peer.services.ocd.adapters.coverInput.CoverInputFormat;
@@ -47,6 +40,14 @@ import java.util.logging.Level;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 
 
@@ -70,7 +71,7 @@ import javax.persistence.TypedQuery;
  */
 @Path("ocdViewer")
 @Produces("text/xml")
-@Version("0.1")
+@Version("1.0")
 public class ServiceClass extends Service {
 	
 	/**
@@ -165,10 +166,10 @@ public class ServiceClass extends Service {
     		@PathParam("GraphLayoutType") String graphLayoutTypeStr,
     		@PathParam("CoverPaintingType") String coverPaintingTypeStr,
     		@PathParam("VisualOutputFormat") String visualOutputFormatStr,
-    		@QueryParam(name="doLabelNodes", defaultValue = "TRUE") String doLabelNodesStr,
-    		@QueryParam(name="doLabelEdges", defaultValue = "FALSE") String doLabelEdgesStr,
-    		@QueryParam(name="minNodeSize", defaultValue = "20") String minNodeSizeStr,
-    		@QueryParam(name="maxNodeSize", defaultValue = "45") String maxNodeSizeStr) {
+    		@DefaultValue("TRUE") @QueryParam("doLabelNodes") String doLabelNodesStr,
+    		@DefaultValue("FALSE") @QueryParam("doLabelEdges") String doLabelEdgesStr,
+    		@DefaultValue("20") @QueryParam("minNodeSize") String minNodeSizeStr,
+    		@DefaultValue("45") @QueryParam("maxNodeSize") String maxNodeSizeStr) {
     	try {
     		long graphId;
     		String username = ((UserAgent) getActiveAgent()).getLoginName();
@@ -289,10 +290,10 @@ public class ServiceClass extends Service {
     @Path("visualization/graph/{graphId}/outputFormat/{VisualOutputFormat}/layout/{GraphLayoutType}")
     public String getGraphVisualization(@PathParam("graphId") String graphIdStr, @PathParam("GraphLayoutType") String graphLayoutTypeStr,
     		@PathParam("VisualOutputFormat") String visualOutputFormatStr,
-    		@QueryParam(name="doLabelNodes", defaultValue = "TRUE") String doLabelNodesStr,
-    		@QueryParam(name="doLabelEdges", defaultValue = "FALSE") String doLabelEdgesStr,
-    		@QueryParam(name="minNodeSize", defaultValue = "20") String minNodeSizeStr,
-    		@QueryParam(name="maxNodeSize", defaultValue = "45") String maxNodeSizeStr) {
+    		@DefaultValue("TRUE") @QueryParam("doLabelNodes") String doLabelNodesStr,
+    		@DefaultValue("FALSE") @QueryParam("doLabelEdges") String doLabelEdgesStr,
+    		@DefaultValue("20") @QueryParam("minNodeSize") String minNodeSizeStr,
+    		@DefaultValue("45") @QueryParam("maxNodeSize") String maxNodeSizeStr) {
     	try {
     		long graphId;
     		String username = ((UserAgent) getActiveAgent()).getLoginName();
@@ -463,7 +464,7 @@ public class ServiceClass extends Service {
 			@PathParam("name") String nameStr,
 			@PathParam("GraphCreationType") String creationTypeStr,
 			@PathParam("GraphInputFormat") String graphInputFormatStr,
-			@QueryParam(name = "doMakeUndirected", defaultValue = "FALSE") String doMakeUndirectedStr,
+			@DefaultValue("FALSE") @QueryParam("doMakeUndirected") String doMakeUndirectedStr,
 			@ContentParam String contentStr) {
 		try {
 			String username = ((UserAgent) getActiveAgent()).getLoginName();
@@ -558,10 +559,10 @@ public class ServiceClass extends Service {
 	@GET
 	@Path("graphs")
 	public String getGraphs(
-			@QueryParam(name = "firstIndex", defaultValue = "0") String firstIndexStr,
-			@QueryParam(name = "length", defaultValue = "") String lengthStr,
-			@QueryParam(name = "includeMeta", defaultValue = "FALSE") String includeMetaStr,
-			@QueryParam(name = "executionStatuses", defaultValue = "") String executionStatusesStr) {
+			@DefaultValue("0") @QueryParam("firstIndex") String firstIndexStr,
+			@DefaultValue("") @QueryParam("length") String lengthStr,
+			@DefaultValue("FALSE") @QueryParam("includeMeta") String includeMetaStr,
+			@DefaultValue("") @QueryParam("executionStatuses") String executionStatusesStr) {
 		try {
 			String username = ((UserAgent) getActiveAgent()).getLoginName();
 			List<CustomGraph> queryResults;
@@ -914,12 +915,12 @@ public class ServiceClass extends Service {
 	@GET
 	@Path("covers")
 	public String getCovers(
-			@QueryParam(name = "firstIndex", defaultValue = "0") String firstIndexStr,
-			@QueryParam(name = "length", defaultValue = "") String lengthStr,
-			@QueryParam(name = "includeMeta", defaultValue = "FALSE") String includeMetaStr,
-			@QueryParam(name = "executionStatuses", defaultValue = "") String executionStatusesStr,
-			@QueryParam(name = "metricExecutionStatuses", defaultValue = "") String metricExecutionStatusesStr,
-			@QueryParam(name = "graphId", defaultValue = "") String graphIdStr) {
+			@DefaultValue("0") @QueryParam("firstIndex") String firstIndexStr,
+			@DefaultValue("") @QueryParam("length") String lengthStr,
+			@DefaultValue("FALSE") @QueryParam("includeMeta") String includeMetaStr,
+			@DefaultValue("") @QueryParam("executionStatuses") String executionStatusesStr,
+			@DefaultValue("") @QueryParam("metricExecutionStatuses") String metricExecutionStatusesStr,
+			@DefaultValue("") @QueryParam("graphId") String graphIdStr) {
 		try {
 			String username = ((UserAgent) getActiveAgent()).getLoginName();
 			long graphId = 0;
