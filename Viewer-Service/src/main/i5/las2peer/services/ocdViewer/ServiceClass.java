@@ -1,6 +1,7 @@
 package i5.las2peer.services.ocdViewer;
 
 import i5.las2peer.api.Service;
+import i5.las2peer.restMapper.MediaType;
 import i5.las2peer.restMapper.RESTMapper;
 import i5.las2peer.restMapper.annotations.ContentParam;
 import i5.las2peer.restMapper.annotations.Version;
@@ -28,6 +29,11 @@ import i5.las2peer.services.ocdViewer.layouters.GraphLayoutType;
 import i5.las2peer.services.ocdViewer.painters.CoverPaintingType;
 import i5.las2peer.services.ocdViewer.utils.LayoutHandler;
 import i5.las2peer.services.ocdViewer.utils.ViewerRequestHandler;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.Contact;
+import io.swagger.annotations.Info;
+import io.swagger.annotations.License;
+import io.swagger.annotations.SwaggerDefinition;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -69,9 +75,26 @@ import javax.ws.rs.QueryParam;
  * @author Sebastian
  *
  */
+@Produces(MediaType.TEXT_XML)
 @Path("ocdViewer")
-@Produces("text/xml")
-@Version("1.0")
+@Version("0.1")
+@Api
+@SwaggerDefinition(
+		info = @Info(
+				title = "OCDViewer",
+				version = "0.1",
+				description = "A RESTful service for overlapping community detection visualization.",
+				termsOfService = "sample-tos.io",
+				contact = @Contact(
+						name = "Sebastian Krott",
+						email = "sebastian.krott@rwth-aachen.de"
+				),
+				license = @License(
+						name = "Apache License 2",
+						url = "http://www.apache.org/licenses/LICENSE-2.0"
+				)
+		))
+
 public class ServiceClass extends Service {
 	
 	/**
