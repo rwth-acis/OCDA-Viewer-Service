@@ -11,3 +11,4 @@ restMapping.xml
 /ocd/derby/db
 /ocd/derby/derby.log
 /ocd/test/output
+/etc/startup
