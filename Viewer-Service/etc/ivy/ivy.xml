@@ -21,6 +21,7 @@
 		<dependency org="org.apache.lucene" name="lucene-analyzers-common" rev="5.3.1"/>
 		
 		<dependency org="batik" name="batik" rev="1.5"/>
+		<dependency org="i5" name="batik" rev="1.0"/>
 		<dependency org="org.bouncycastle" name="bcprov-jdk15on" rev="1.50"/>
 		<dependency org="commons-codec" name="commons-codec" rev="1.9"/>
 		<dependency org="org.apache.commons" name="commons-lang3" rev="3.3.1"/>
