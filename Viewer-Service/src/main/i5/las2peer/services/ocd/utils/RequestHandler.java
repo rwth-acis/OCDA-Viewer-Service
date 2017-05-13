@@ -32,6 +32,8 @@ import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -149,17 +151,25 @@ public class RequestHandler {
 	/*
 	 * Note that this XML document is created "manually" in order to omit any additional exceptions.
 	 */
-	public String writeError(Error error, String errorMessage) {
+	public Response writeError(Error error, String errorMessage) {
 		if(errorMessage == null) {
 			errorMessage = "";
 		}
-		return "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
+		String message =  "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
 			+ "<Error>"
 			+ "<Id>"+ error.getId() +"</Id>"
 			+ "<Name>"+ error.toString() +"</Name>"
 			+ "<Message>"+ errorMessage +"</Message>"
 			+ "</Error>";
-	}
+		
+		if(error.getId() == 1) {
+			return Response.status(Status.BAD_REQUEST).entity(message).build();
+		} else if(error.getId() == 2) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(message).build();
+		} else {
+			return Response.serverError().build();
+		}
+}
 
 	/**
 	 * Transforms a parameter xml into a parameter map.

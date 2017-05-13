@@ -1,11 +1,11 @@
 package i5.las2peer.services.ocdViewer;
 
-import i5.las2peer.api.Service;
-import i5.las2peer.restMapper.MediaType;
-import i5.las2peer.restMapper.RESTMapper;
-import i5.las2peer.restMapper.annotations.ContentParam;
-import i5.las2peer.restMapper.annotations.Version;
+import i5.las2peer.api.Context;
+import i5.las2peer.logging.L2pLogger;
+import i5.las2peer.restMapper.RESTService;
+import i5.las2peer.restMapper.annotations.ServicePath;
 import i5.las2peer.security.UserAgent;
+
 import i5.las2peer.services.ocd.adapters.coverInput.CoverInputFormat;
 import i5.las2peer.services.ocd.adapters.coverOutput.CoverOutputFormat;
 import i5.las2peer.services.ocd.adapters.graphInput.GraphInputFormat;
@@ -54,6 +54,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 
 
 
@@ -75,14 +76,13 @@ import javax.ws.rs.QueryParam;
  * @author Sebastian
  *
  */
-@Produces(MediaType.TEXT_XML)
-@Path("ocdViewer")
-@Version("0.1")
+
+@ServicePath("ocdViewer")
 @Api
 @SwaggerDefinition(
 		info = @Info(
 				title = "OCDViewer",
-				version = "0.1",
+				version = "1.0",
 				description = "A RESTful service for overlapping community detection visualization.",
 				termsOfService = "sample-tos.io",
 				contact = @Contact(
@@ -95,11 +95,21 @@ import javax.ws.rs.QueryParam;
 				)
 		))
 
-public class ServiceClass extends Service {
+public class ServiceClass extends RESTService {
 	
-	/**
-	 * Initializes the service.
-	 */
+	/////////////////////////////
+	/// Service initialization.
+	////////////////////////////
+	
+	@Override
+	protected void initResources() {
+		getResourceConfig().register(RootResource.class);		
+	}  
+
+	public ServiceClass() {
+		setFieldValues();
+	}
+	
 	static {
 		RequestHandler reqHandler = new RequestHandler();
 		reqHandler.log(Level.INFO, "Overlapping Community Detection Viewer Service started.");
@@ -121,29 +131,30 @@ public class ServiceClass extends Service {
 	
 	
 	//////////////////////////////////////////////////////////////////
-	///////// METHODS
+	///////// REST Service Methods
 	//////////////////////////////////////////////////////////////////
+
+	@Path("/")
+	public static class RootResource {
+		
+	
+	// instantiate the logger class
+	private final L2pLogger logger = L2pLogger.getInstance(ServiceClass.class.getName());
+	
+	// get access to the service class
+	private final ServiceClass service = (ServiceClass) Context.getCurrent().getService();
+	
+	// get the request handler
+	private final ViewerRequestHandler requestHandler = service.requestHandler;	
+	
+	private final LayoutHandler layoutHandler = service.layoutHandler;
+
+	
 	
 	//////////////////////////////////////////////////////////////////
 	///////// GENERAL
-	//////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////	
 	
-	/**
-	 * This method is needed for every RESTful application in LAS2peer.
-	 * 
-	 * @return the mapping
-	 */
-    public String getRESTMapping()
-    {
-        String result="";
-        try {
-            result= RESTMapper.getMethodsAsXML(this.getClass());
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-        return result;
-    }
     
     /**
      * Simple function to validate a user login.
@@ -154,10 +165,10 @@ public class ServiceClass extends Service {
      */
     @GET
     @Path("validate")
-    public String validateLogin()
+    public Response validateLogin()
     {
     	try {
-    		return requestHandler.writeConfirmationXml();
+    		return Response.ok(requestHandler.writeConfirmationXml()).build();
     	}
     	catch (Exception e) {
     		requestHandler.log(Level.SEVERE, "", e);
@@ -185,7 +196,7 @@ public class ServiceClass extends Service {
      */
     @GET
     @Path("visualization/cover/{coverId}/graph/{graphId}/outputFormat/{VisualOutputFormat}/layout/{GraphLayoutType}/paint/{CoverPaintingType}")
-    public String getCoverVisualization(@PathParam("graphId") String graphIdStr, @PathParam("coverId") String coverIdStr,
+    public Response getCoverVisualization(@PathParam("graphId") String graphIdStr, @PathParam("coverId") String coverIdStr,
     		@PathParam("GraphLayoutType") String graphLayoutTypeStr,
     		@PathParam("CoverPaintingType") String coverPaintingTypeStr,
     		@PathParam("VisualOutputFormat") String visualOutputFormatStr,
@@ -195,7 +206,7 @@ public class ServiceClass extends Service {
     		@DefaultValue("45") @QueryParam("maxNodeSize") String maxNodeSizeStr) {
     	try {
     		long graphId;
-    		String username = ((UserAgent) getActiveAgent()).getLoginName();
+    		String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 	    	try {
     			graphId = Long.parseLong(graphIdStr);
     		}
@@ -289,7 +300,7 @@ public class ServiceClass extends Service {
 			}
 			em.close();
 	    	layoutHandler.doLayout(cover, layout, doLabelNodes, doLabelEdges, minNodeSize, maxNodeSize, painting);
-	    	return requestHandler.writeCover(cover, format);
+	    	return Response.ok(requestHandler.writeCover(cover, format)).build();
     	}
     	catch (Exception e) {
     		requestHandler.log(Level.SEVERE, "", e);
@@ -311,7 +322,7 @@ public class ServiceClass extends Service {
      */
     @GET
     @Path("visualization/graph/{graphId}/outputFormat/{VisualOutputFormat}/layout/{GraphLayoutType}")
-    public String getGraphVisualization(@PathParam("graphId") String graphIdStr, @PathParam("GraphLayoutType") String graphLayoutTypeStr,
+    public Response getGraphVisualization(@PathParam("graphId") String graphIdStr, @PathParam("GraphLayoutType") String graphLayoutTypeStr,
     		@PathParam("VisualOutputFormat") String visualOutputFormatStr,
     		@DefaultValue("TRUE") @QueryParam("doLabelNodes") String doLabelNodesStr,
     		@DefaultValue("FALSE") @QueryParam("doLabelEdges") String doLabelEdgesStr,
@@ -319,7 +330,7 @@ public class ServiceClass extends Service {
     		@DefaultValue("45") @QueryParam("maxNodeSize") String maxNodeSizeStr) {
     	try {
     		long graphId;
-    		String username = ((UserAgent) getActiveAgent()).getLoginName();
+    		String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 	    	try {
     			graphId = Long.parseLong(graphIdStr);
     		}
@@ -397,7 +408,7 @@ public class ServiceClass extends Service {
 			}
 			em.close();
 	    	layoutHandler.doLayout(graph, layout, doLabelNodes, doLabelEdges, minNodeSize, maxNodeSize);
-	    	return requestHandler.writeGraph(graph, format);
+	    	return Response.ok(requestHandler.writeGraph(graph, format)).build();
     	}
     	catch (Exception e) {
     		requestHandler.log(Level.SEVERE, "", e);
@@ -416,9 +427,9 @@ public class ServiceClass extends Service {
 	 */
 	@GET
 	@Path("graphs/layout/names")
-	public String getLayoutTypeNames() {
+	public Response getLayoutTypeNames() {
 		try {
-			return requestHandler.writeEnumNames(GraphLayoutType.class);
+			return Response.ok(requestHandler.writeEnumNames(GraphLayoutType.class)).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -433,9 +444,9 @@ public class ServiceClass extends Service {
 	 */
 	@GET
 	@Path("graphs/painting/names")
-	public String getPaintingTypeNames() {
+	public Response getPaintingTypeNames() {
 		try {
-			return requestHandler.writeEnumNames(CoverPaintingType.class);
+			return Response.ok(requestHandler.writeEnumNames(CoverPaintingType.class)).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -450,9 +461,9 @@ public class ServiceClass extends Service {
 	 */
 	@GET
 	@Path("visualization/formats/output/names")
-	public String getVisualizationFormatNames() {
+	public Response getVisualizationFormatNames() {
 		try {
-			return requestHandler.writeEnumNames(VisualOutputFormat.class);
+			return Response.ok(requestHandler.writeEnumNames(VisualOutputFormat.class)).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -483,14 +494,14 @@ public class ServiceClass extends Service {
 	 */
 	@POST
 	@Path("graph/name/{name}/creationmethod/{GraphCreationType}/inputFormat/{GraphInputFormat}")
-	public String createGraph(
+	public Response createGraph(
 			@PathParam("name") String nameStr,
 			@PathParam("GraphCreationType") String creationTypeStr,
 			@PathParam("GraphInputFormat") String graphInputFormatStr,
 			@DefaultValue("FALSE") @QueryParam("doMakeUndirected") String doMakeUndirectedStr,
-			@ContentParam String contentStr) {
+			String contentStr) {
 		try {
-			String username = ((UserAgent) getActiveAgent()).getLoginName();
+			String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 			GraphInputFormat format;
 			CustomGraph graph;
 			try {
@@ -552,7 +563,7 @@ public class ServiceClass extends Service {
 				throw e;
 			}
 			em.close();
-			return requestHandler.writeId(graph);
+			return Response.ok(requestHandler.writeId(graph)).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -581,13 +592,13 @@ public class ServiceClass extends Service {
 	 */
 	@GET
 	@Path("graphs")
-	public String getGraphs(
+	public Response getGraphs(
 			@DefaultValue("0") @QueryParam("firstIndex") String firstIndexStr,
 			@DefaultValue("") @QueryParam("length") String lengthStr,
 			@DefaultValue("FALSE") @QueryParam("includeMeta") String includeMetaStr,
 			@DefaultValue("") @QueryParam("executionStatuses") String executionStatusesStr) {
 		try {
-			String username = ((UserAgent) getActiveAgent()).getLoginName();
+			String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 			List<CustomGraph> queryResults;
 			List<Integer> executionStatusIds = new ArrayList<Integer>();
 			if (executionStatusesStr != "") {
@@ -654,7 +665,7 @@ public class ServiceClass extends Service {
 			} else {
 				responseStr = requestHandler.writeGraphIds(queryResults);
 			}
-			return responseStr;
+			return Response.ok(responseStr).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -674,11 +685,11 @@ public class ServiceClass extends Service {
 	@GET
 	@Produces("text/plain")
 	@Path("graph/{graphId}/outputFormat/{GraphOutputFormat}")
-	public String getGraph(@PathParam("graphId") String graphIdStr,
+	public Response getGraph(@PathParam("graphId") String graphIdStr,
 			@PathParam("GraphOutputFormat") String graphOuputFormatStr) {
 		try {
 			long graphId;
-			String username = ((UserAgent) getActiveAgent()).getLoginName();
+			String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 			GraphOutputFormat format;
 			try {
 				graphId = Long.parseLong(graphIdStr);
@@ -716,7 +727,7 @@ public class ServiceClass extends Service {
 				throw e;
 			}
 			em.close();
-			return requestHandler.writeGraph(graph, format);
+			return Response.ok(requestHandler.writeGraph(graph, format)).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -737,10 +748,10 @@ public class ServiceClass extends Service {
 	 */
 	@DELETE
 	@Path("graph/{graphId}")
-	public String deleteGraph(@PathParam("graphId") String graphIdStr) {
+	public Response deleteGraph(@PathParam("graphId") String graphIdStr) {
 		try {
 			long graphId;
-			String username = ((UserAgent) getActiveAgent()).getLoginName();
+			String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 			try {
 				graphId = Long.parseLong(graphIdStr);
 			} catch (Exception e) {
@@ -801,7 +812,7 @@ public class ServiceClass extends Service {
 				}
 				throw e;
 			}
-			return requestHandler.writeConfirmationXml();
+			return Response.ok(requestHandler.writeConfirmationXml()).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -830,13 +841,13 @@ public class ServiceClass extends Service {
 	 */
 	@POST
 	@Path("cover/graph/{graphId}/name/{name}/creationmethod/{CoverCreationType}/inputFormat/{CoverInputFormat}")
-	public String createCover(@PathParam("graphId") String graphIdStr,
+	public Response createCover(@PathParam("graphId") String graphIdStr,
 			@PathParam("name") String nameStr,
 			@PathParam("CoverCreationType") String creationTypeStr,
 			@PathParam("CoverInputFormat") String coverInputFormatStr,
-			@ContentParam String contentStr) {
+			String contentStr) {
 		try {
-			String username = ((UserAgent) getActiveAgent()).getLoginName();
+			String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 			long graphId;
 			try {
 				graphId = Long.parseLong(graphIdStr);
@@ -900,7 +911,7 @@ public class ServiceClass extends Service {
 				throw e;
 			}
 			em.close();
-			return requestHandler.writeId(cover);
+			return Response.ok(requestHandler.writeId(cover)).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -937,7 +948,7 @@ public class ServiceClass extends Service {
 	 */
 	@GET
 	@Path("covers")
-	public String getCovers(
+	public Response getCovers(
 			@DefaultValue("0") @QueryParam("firstIndex") String firstIndexStr,
 			@DefaultValue("") @QueryParam("length") String lengthStr,
 			@DefaultValue("FALSE") @QueryParam("includeMeta") String includeMetaStr,
@@ -945,7 +956,7 @@ public class ServiceClass extends Service {
 			@DefaultValue("") @QueryParam("metricExecutionStatuses") String metricExecutionStatusesStr,
 			@DefaultValue("") @QueryParam("graphId") String graphIdStr) {
 		try {
-			String username = ((UserAgent) getActiveAgent()).getLoginName();
+			String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 			long graphId = 0;
 			if (graphIdStr != "") {
 				try {
@@ -1061,7 +1072,7 @@ public class ServiceClass extends Service {
 			} else {
 				responseStr = requestHandler.writeCoverIds(queryResults);
 			}
-			return responseStr;
+			return Response.ok(responseStr).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -1083,11 +1094,11 @@ public class ServiceClass extends Service {
 	@GET
 	@Produces("text/plain")
 	@Path("cover/{coverId}/graph/{graphId}/outputFormat/{CoverOutputFormat}")
-	public String getCover(@PathParam("graphId") String graphIdStr,
+	public Response getCover(@PathParam("graphId") String graphIdStr,
 			@PathParam("coverId") String coverIdStr,
 			@PathParam("CoverOutputFormat") String coverOutputFormatStr) {
 		try {
-			String username = ((UserAgent) getActiveAgent()).getLoginName();
+			String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 			long graphId;
 			try {
 				graphId = Long.parseLong(graphIdStr);
@@ -1138,7 +1149,7 @@ public class ServiceClass extends Service {
 						"Cover does not exist: cover id " + coverId
 								+ ", graph id " + graphId);
 			}
-			return requestHandler.writeCover(cover, format);
+			return Response.ok(requestHandler.writeCover(cover, format)).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -1161,10 +1172,10 @@ public class ServiceClass extends Service {
 	 */
 	@DELETE
 	@Path("cover/{coverId}/graph/{graphId}")
-	public String deleteCover(@PathParam("coverId") String coverIdStr,
+	public Response deleteCover(@PathParam("coverId") String coverIdStr,
 			@PathParam("graphId") String graphIdStr) {
 		try {
-			String username = ((UserAgent) getActiveAgent()).getLoginName();
+			String username = ((UserAgent) Context.getCurrent().getMainAgent()).getLoginName();
 			long graphId;
 			try {
 				graphId = Long.parseLong(graphIdStr);
@@ -1245,7 +1256,7 @@ public class ServiceClass extends Service {
 				throw e;
 			}
 			em.close();
-			return requestHandler.writeConfirmationXml();
+			return Response.ok(requestHandler.writeConfirmationXml()).build();
 		} catch (Exception e) {
 			requestHandler.log(Level.SEVERE, "", e);
 			return requestHandler.writeError(Error.INTERNAL,
@@ -1264,10 +1275,10 @@ public class ServiceClass extends Service {
      */
     @GET
     @Path("graphs/creationmethods/names")
-    public String getGraphCreationMethodNames()
+    public Response getGraphCreationMethodNames()
     {
     	try {
-			return requestHandler.writeEnumNames(GraphCreationType.class);
+			return Response.ok(requestHandler.writeEnumNames(GraphCreationType.class)).build();
     	}
     	catch (Exception e) {
     		requestHandler.log(Level.SEVERE, "", e);
@@ -1282,10 +1293,10 @@ public class ServiceClass extends Service {
      */
     @GET
     @Path("graphs/formats/input/names")
-    public String getGraphInputFormatNames()
+    public Response getGraphInputFormatNames()
     {
     	try {
-			return requestHandler.writeEnumNames(GraphInputFormat.class);
+			return Response.ok(requestHandler.writeEnumNames(GraphInputFormat.class)).build();
     	}
     	catch (Exception e) {
     		requestHandler.log(Level.SEVERE, "", e);
@@ -1300,10 +1311,10 @@ public class ServiceClass extends Service {
      */
     @GET
     @Path("graphs/formats/output/names")
-    public String getGraphOutputFormatNames()
+    public Response getGraphOutputFormatNames()
     {
     	try {
-			return requestHandler.writeEnumNames(GraphOutputFormat.class);
+			return Response.ok(requestHandler.writeEnumNames(GraphOutputFormat.class)).build();
     	}
     	catch (Exception e) {
     		requestHandler.log(Level.SEVERE, "", e);
@@ -1318,10 +1329,10 @@ public class ServiceClass extends Service {
      */
     @GET
     @Path("covers/formats/output/names")
-    public String getCoverOutputFormatNames()
+    public Response getCoverOutputFormatNames()
     {
     	try {
-			return requestHandler.writeEnumNames(CoverOutputFormat.class);
+			return Response.ok(requestHandler.writeEnumNames(CoverOutputFormat.class)).build();
     	}
     	catch (Exception e) {
     		requestHandler.log(Level.SEVERE, "", e);
@@ -1336,15 +1347,15 @@ public class ServiceClass extends Service {
      */
     @GET
     @Path("covers/formats/input/names")
-    public String getCoverInputFormatNames()
+    public Response getCoverInputFormatNames()
     {
     	try {
-			return requestHandler.writeEnumNames(CoverInputFormat.class);
+			return Response.ok(requestHandler.writeEnumNames(CoverInputFormat.class)).build();
     	}
     	catch (Exception e) {
     		requestHandler.log(Level.SEVERE, "", e);
     		return requestHandler.writeError(Error.INTERNAL, "Internal system error.");
     	}
     }
-    
+	}
 }
