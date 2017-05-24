@@ -69,7 +69,19 @@ public class ServiceTest {
 		connector.setLogStream(new PrintStream (logStream));
 		connector.start ( node );
         Thread.sleep(1000); //wait a second for the connector to become ready
-		testAgent = MockAgentFactory.getAdam();		
+		testAgent = MockAgentFactory.getAdam();
+		
+        connector.updateServiceList();
+        //avoid timing errors: wait for the repository manager to get all services before continuing
+        try
+        {
+            System.out.println("waiting..");
+            Thread.sleep(10000);
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
 		
 	}
 	
